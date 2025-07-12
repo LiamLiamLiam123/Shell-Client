@@ -1,5 +1,4 @@
 package me.alpha432.oyvey.manager;
-package net.wurstclient.hacks;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -17,11 +16,6 @@ import me.alpha432.oyvey.features.modules.player.FastPlace;
 import me.alpha432.oyvey.features.modules.player.NoFall;
 import me.alpha432.oyvey.features.modules.player.Velocity;
 import me.alpha432.oyvey.features.modules.render.BlockHighlight;
-import net.wurstclient.Category;
-import net.wurstclient.SearchTags;
-import net.wurstclient.hack.Hack;
-import net.wurstclient.settings.SliderSetting;
-import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import me.alpha432.oyvey.util.traits.Jsonable;
 import me.alpha432.oyvey.util.traits.Util;
 
