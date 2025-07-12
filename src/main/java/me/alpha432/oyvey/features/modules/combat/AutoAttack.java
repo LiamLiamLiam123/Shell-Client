@@ -22,7 +22,7 @@ public class AutoAttack extends Module {
     private Entity target;
 
     public AutoAttack() {
-        super("KillAura", "Automatically attacks players", Category.COMBAT, true, false, false);
+        super("AutoAttack", "Automatically attacks players", Category.COMBAT, true, false, false);
     }
 
     @Override
