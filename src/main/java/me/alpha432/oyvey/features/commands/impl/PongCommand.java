@@ -13,7 +13,5 @@ public class PongCommand
     public void execute(String[] commands) {
         PongCommand.sendMessage("Pong!");
             }
-            PongCommand.sendMessage(builder.toString());
+
         }
-    }
-}
