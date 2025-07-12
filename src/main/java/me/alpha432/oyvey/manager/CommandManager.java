@@ -27,8 +27,6 @@ public class CommandManager
         commands.add(new PrefixCommand());
         commands.add(new PongCommand());
         commands.add(new HelpCommand());
-        commands.add(new GamemodeCommand());
-        commands.add(new SpectateCommand());
     }
 
     public static String[] removeElement(String[] input, int indexToDelete) {
