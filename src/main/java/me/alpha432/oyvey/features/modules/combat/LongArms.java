@@ -6,10 +6,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.client.MinecraftClient;
 
-public class ReachExtender extends Module {
+public class LongArms extends Module {
     public Setting<Double> reach = this.register(new Setting<>("LongArms", 4.5, 3.0, 10.0));
 
-    public ReachExtender() {
+    public LongArms() {
         super("LongArms", "Increases the length of your Reach.", Category.COMBAT, true, false, false);
     }
 
