@@ -14,7 +14,7 @@ public class HitboxExtender extends Module {
     public Setting<Double> extendSize = this.register(new Setting<>("ExtendSize", 0.5, 0.1, 2.0));
 
     public HitboxExtender() {
-        super("Hitbox", "Expands the Player Hitbox in Fighting.", Category.COMBAT, true, false, false);
+        super("Hitboxs", "Expands the Player Hitbox in Fighting.", Category.COMBAT, true, false, false);
     }
 
     @Override
