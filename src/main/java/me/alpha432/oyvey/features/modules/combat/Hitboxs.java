@@ -72,4 +72,4 @@ public class Hitboxs extends Module {
         consumer.vertex(matrix, x2, y2, z2).color(r, g, b, alpha).next();
     }
 }
-c
+
