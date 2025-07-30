@@ -1,7 +1,7 @@
 package me.alpha432.oyvey.features.modules.combat;
 
 import me.alpha432.oyvey.features.modules.Module;
-import me.alpha432.oyvey.features.setting.Setting;
+import me.alpha432.oyvey.features.settings.Setting;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Box;
@@ -10,10 +10,10 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.MinecraftClient;
 
-public class HitboxExtender extends Module {
+public class Hitboxs extends Module {
     public Setting<Double> extendSize = this.register(new Setting<>("ExtendSize", 0.5, 0.1, 2.0));
 
-    public HitboxExtender() {
+    public Hitboxs() {
         super("Hitboxs", "Expands the Player Hitbox in Fighting.", Category.COMBAT, true, false, false);
     }
 
