@@ -68,8 +68,7 @@ public class Hitboxs extends Module {
 
     private void drawLine(VertexConsumer consumer, Matrix4f matrix, float x1, float y1, float z1,
                           float x2, float y2, float z2, float r, float g, float b, float alpha) {
-        consumer.vertex(matrix, x1, y1, z1).color(r, g, b, alpha).next();
-        consumer.vertex(matrix, x2, y2, z2).color(r, g, b, alpha).next();
+        consumer.vertex(matrix, x1, y1, z1).color(r, g, b, alpha);
+        consumer.vertex(matrix, x2, y2, z2).color(r, g, b, alpha);
     }
 }
-
