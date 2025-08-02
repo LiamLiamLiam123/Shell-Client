@@ -12,12 +12,12 @@ public class ToggleSprint extends Module {
 
     @Override
     public void onUpdate() {
-        mc.options.keySprint.setPressed(true);
+        mc.options.sprintKey.setPressed(true);
     }
 
     @Override
     public void onDisable() {
-        mc.options.keySprint.setPressed(false);
+        mc.options.sprintKey.setPressed(false);
         super.onDisable();
     }
 }
