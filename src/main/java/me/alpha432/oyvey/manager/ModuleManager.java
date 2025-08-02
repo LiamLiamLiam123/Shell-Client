@@ -14,6 +14,7 @@ import me.alpha432.oyvey.features.modules.combat.LongArms;
 import me.alpha432.oyvey.features.modules.misc.MCF;
 import me.alpha432.oyvey.features.modules.movement.ReverseStep;
 import me.alpha432.oyvey.features.modules.movement.Step;
+import me.alpha432.oyvey.features.modules.movement.ToggleSprint;
 import me.alpha432.oyvey.features.modules.player.FastPlace;
 import me.alpha432.oyvey.features.modules.player.NoFall;
 import me.alpha432.oyvey.features.modules.player.Velocity;
@@ -45,6 +46,7 @@ public class ModuleManager implements Jsonable, Util {
         modules.add(new NoFall());
         modules.add(new LongArms());
         modules.add(new Hitboxs());
+        modules.add(new ToggleSprint());
 
     }
 
