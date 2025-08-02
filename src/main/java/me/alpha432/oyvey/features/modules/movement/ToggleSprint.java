@@ -12,13 +12,12 @@ public class ToggleSprint extends Module {
 
     @Override
     public void onUpdate() {
-        mc.options.keySprint.setPressed(true); // Updated for Fabric
+        mc.options.keySprint.setPressed(true);
     }
 
     @Override
     public void onDisable() {
-        mc.options.keySprint.setPressed(false); // Updated for Fabric
+        mc.options.keySprint.setPressed(false);
         super.onDisable();
     }
 }
-
