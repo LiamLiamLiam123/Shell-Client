@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "id": "oyvey",
   "version": "${version}",
-  "name": "oyvey-ported",
-  "description": "free and opensource client base",
+  "name": "Shell-Client",
+  "description": "Shell-Client is cool Minecraft Client because i said so",
   "authors": [
     "3arthqu4ke",
     "alpha432",
