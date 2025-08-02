@@ -12,7 +12,9 @@ public class ToggleSprint extends Module {
 
     @Override
     public void onUpdate() {
-        mc.options.sprintKey.setPressed(true);
+        if (mc.player != null) {
+            mc.options.sprintKey.setPressed(true);
+        }
     }
 
     @Override
@@ -21,3 +23,4 @@ public class ToggleSprint extends Module {
         super.onDisable();
     }
 }
+
