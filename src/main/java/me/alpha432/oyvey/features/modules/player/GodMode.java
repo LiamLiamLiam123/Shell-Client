@@ -2,22 +2,25 @@ package me.alpha432.oyvey.features.modules.player;
 
 import me.alpha432.oyvey.features.modules.Module;
 import me.alpha432.oyvey.features.modules.Category;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntityMetadataS2CPacket;
 import net.minecraft.network.PacketByteBuf;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+
+import net.minecraft.entity.player.PlayerEntity;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
- * Cosmetic GodMode module for OyVey (1.21.5 Fabric)
- * - Cancels hurt animations
- * - Cancels knockback
- * - Cancels server health updates
- * - Sends spoofed movement to confuse servers
+ * GodMode Module — hides hurt animations, cancels knockback, 
+ * repeatedly sends spoofed move packets to confuse simple servers.
  */
 public class GodMode extends Module {
 
@@ -25,61 +28,81 @@ public class GodMode extends Module {
     private static final Identifier ENTITY_VELOCITY = new Identifier("minecraft", "entity_velocity");
     private static final Identifier ENTITY_METADATA = new Identifier("minecraft", "entity_metadata");
 
+    private final MinecraftClient mc = MinecraftClient.getInstance();
+    private final AtomicBoolean enabled = new AtomicBoolean(false);
+    private Thread spoofThread;
+
     public GodMode() {
-        super("GodMode", "Client desync to fake invulnerability", Category.PLAYER, false, false, false);
+        super("GodMode", "Client desync to fake invulnerability on servers", Category.PLAYER, false, false, false);
     }
 
     @Override
     public void onEnable() {
-        ClientPlayConnectionEvents.INIT.register((handler, client) -> {
-            registerPacketInterceptors();
-        });
+        enabled.set(true);
+
         registerPacketInterceptors();
-        sendSpoofedPosition();
+
+        // Start a thread to spam spoofed movement packets every 50ms
+        spoofThread = new Thread(() -> {
+            while (enabled.get()) {
+                sendSpoofedPosition();
+                try {
+                    Thread.sleep(50); // 20 packets per second approx
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+        }, "GodModeSpoofThread");
+        spoofThread.setDaemon(true);
+        spoofThread.start();
     }
 
     @Override
     public void onDisable() {
-        // Packet interceptors can't be unregistered cleanly; recommend client restart or reload
+        enabled.set(false);
+        if (spoofThread != null && spoofThread.isAlive()) {
+            spoofThread.interrupt();
+        }
     }
 
     private void registerPacketInterceptors() {
-        MinecraftClient client = MinecraftClient.getInstance();
-
-        ClientPlayNetworking.registerReceiver(ENTITY_STATUS, (c, h, buf, sender) -> {
+        ClientPlayNetworking.registerReceiver(ENTITY_STATUS, (client, handler, buf, sender) -> {
             byte status = buf.readByte();
-            if (client.player != null && status == 2) { // 2 = hurt animation
-                c.execute(() -> client.player.hurtTime = 0); // cancel hurt visuals
+            if (mc.player != null && status == 2) { // 2 = hurt animation
+                client.execute(() -> mc.player.hurtTime = 0);
+                return; // Cancel hurt animation packet
             }
         });
 
-        ClientPlayNetworking.registerReceiver(ENTITY_VELOCITY, (c, h, buf, sender) -> {
+        ClientPlayNetworking.registerReceiver(ENTITY_VELOCITY, (client, handler, buf, sender) -> {
             int entityId = buf.readInt();
-            buf.readDouble(); buf.readDouble(); buf.readDouble(); // velocity x, y, z
-            if (client.player != null && entityId == client.player.getId()) {
-                // Cancel knockback for player
+            // Read velocities but don't apply if it's us
+            if (mc.player != null && entityId == mc.player.getId()) {
+                // skip velocity packet - cancel knockback
+                return;
             }
+            // Otherwise pass the packet normally (not canceling for others)
         });
 
-        ClientPlayNetworking.registerReceiver(ENTITY_METADATA, (c, h, buf, sender) -> {
+        ClientPlayNetworking.registerReceiver(ENTITY_METADATA, (client, handler, buf, sender) -> {
             int entityId = buf.readInt();
-            if (client.player != null && entityId == client.player.getId()) {
+            if (mc.player != null && entityId == mc.player.getId()) {
                 // Skip metadata that could update health
                 buf.readCollection(list -> null);
+                return;
             }
         });
     }
 
     private void sendSpoofedPosition() {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player != null && client.getNetworkHandler() != null) {
-            double x = client.player.getX();
-            double y = client.player.getY();
-            double z = client.player.getZ();
-            boolean onGround = client.player.isOnGround();
+        if (mc.player == null || mc.getNetworkHandler() == null) return;
 
-            PlayerMoveC2SPacket packet = new PlayerMoveC2SPacket.PositionAndOnGround(x, y + 1.5, z, onGround);
-            client.getNetworkHandler().sendPacket(packet);
-        }
+        double x = mc.player.getX();
+        double y = mc.player.getY() + 1.5; // slightly raise Y to confuse server position checks
+        double z = mc.player.getZ();
+        boolean onGround = mc.player.isOnGround();
+
+        PlayerMoveC2SPacket packet = new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, onGround);
+        mc.getNetworkHandler().sendPacket(packet);
     }
 }
