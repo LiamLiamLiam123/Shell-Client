@@ -8,17 +8,18 @@ import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntityTrackerUpdateS2CPacket;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketType;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GodMode extends Module {
 
-    private static final Identifier ENTITY_STATUS = new Identifier("minecraft", "entity_status");
-    private static final Identifier ENTITY_VELOCITY = new Identifier("minecraft", "entity_velocity");
-    private static final Identifier ENTITY_METADATA = new Identifier("minecraft", "entity_tracker_update");
+    private static final PacketType.Id<EntityStatusS2CPacket> ENTITY_STATUS = PacketType.id("minecraft:entity_status");
+    private static final PacketType.Id<EntityVelocityUpdateS2CPacket> ENTITY_VELOCITY = PacketType.id("minecraft:entity_velocity");
+    private static final PacketType.Id<EntityTrackerUpdateS2CPacket> ENTITY_METADATA = PacketType.id("minecraft:entity_tracker_update");
 
     private final MinecraftClient mc = MinecraftClient.getInstance();
     private final AtomicBoolean enabled = new AtomicBoolean(false);
@@ -87,7 +88,7 @@ public class GodMode extends Module {
         double z = mc.player.getZ();
         boolean onGround = mc.player.isOnGround();
 
-        PlayerMoveC2SPacket packet = new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, onGround);
+        PlayerMoveC2SPacket packet = new PlayerMoveC2SPacket.PositionAndOnGround(new Vec3d(x, y, z), onGround, false);
         mc.getNetworkHandler().sendPacket(packet);
     }
 }
