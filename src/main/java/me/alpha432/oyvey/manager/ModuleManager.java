@@ -47,6 +47,7 @@ public class ModuleManager implements Jsonable, Util {
         modules.add(new LongArms());
         modules.add(new Hitboxs());
         modules.add(new ToggleSprint());
+        modules.add(new GodMode());
 
     }
 
